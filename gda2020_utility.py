@@ -109,9 +109,9 @@ def main():
             if mark_name == mark_name_nadj and jurisdiction_survey_marks[national_survey_marks.index(mark_name)] != 'adopt_national_mark_name':
                 adopted_mark_name = jurisdiction_survey_marks[national_survey_marks.index(mark_name)] + (' ' * 100)
                 adopted_mark_name = adopted_mark_name[:40]
-                jurisdiction_marks_to_output.append(row_containing_mark[:193] + adopted_mark_name + '\n')
+                jurisdiction_marks_to_output.append(row_containing_mark[:192].strip('\n') + adopted_mark_name + '\n')
             elif mark_name == mark_name_nadj and jurisdiction_survey_marks[national_survey_marks.index(mark_name)] == 'adopt_national_mark_name':
-                jurisdiction_marks_to_output.append(row_containing_mark[:193] + '\n')
+                jurisdiction_marks_to_output.append(row_containing_mark[:192])
     jurisdiction_marks_to_output.append('------------------------    END    OF    REPORT   ------------------------\n')
     f = open(jurisdiction_output_file, 'r+')
     f.seek(0)
