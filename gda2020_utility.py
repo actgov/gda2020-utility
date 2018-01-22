@@ -6,7 +6,7 @@ import argparse
 import sys
 
 # Author: Aaron O'Hehir - actmapi administrator
-# Date: 22/01/2018
+# Date: 23/01/2018
 
 """ Creates a clean list where 
     unicode strings are converted to ascii,
@@ -111,7 +111,7 @@ def main():
                 adopted_mark_name = adopted_mark_name[:40]
                 jurisdiction_marks_to_output.append(row_containing_mark[:192].strip('\n') + adopted_mark_name + '\n')
             elif mark_name == mark_name_nadj and jurisdiction_survey_marks[national_survey_marks.index(mark_name)] == 'adopt_national_mark_name':
-                jurisdiction_marks_to_output.append(row_containing_mark[:192])
+                jurisdiction_marks_to_output.append(row_containing_mark[:192] + '\n')
     jurisdiction_marks_to_output.append('------------------------    END    OF    REPORT   ------------------------\n')
     f = open(jurisdiction_output_file, 'r+')
     f.seek(0)
