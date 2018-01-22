@@ -8,21 +8,6 @@ import sys
 # Author: Aaron O'Hehir - actmapi administrator
 # Date: 23/01/2018
 
-""" Creates a clean list where 
-    unicode strings are converted to ascii,
-    nan and int are converted to strings.
-"""
-def clean_input_list(mark_list):
-    cleaned_list = []
-    for mark in mark_list:
-        if type(mark) is float:
-            cleaned_list.append('adopt_national_mark_name')
-        elif type(mark) is unicode:
-            cleaned_list.append(mark.encode('ascii'))
-        elif type(mark) is int:
-            cleaned_list.append(str(mark))
-    return cleaned_list
-
 """
     This script takes an input jurisdiction master list (xls document) and
     uses it to create a subset of the national adjustment (.xyz) file.
@@ -41,6 +26,22 @@ def clean_input_list(mark_list):
             national_marks_in = path, file name and extension to national adjustment input .xyz file
             subset_out = path, file name and extension to jurisdiction subset output .xyz file
 """
+
+""" 
+    Creates a clean list where 
+    unicode strings are converted to ascii,
+    nan and int are converted to strings.
+"""
+def clean_input_list(mark_list):
+    cleaned_list = []
+    for mark in mark_list:
+        if type(mark) is float:
+            cleaned_list.append('adopt_national_mark_name')
+        elif type(mark) is unicode:
+            cleaned_list.append(mark.encode('ascii'))
+        elif type(mark) is int:
+            cleaned_list.append(str(mark))
+    return cleaned_list
 
 def main():
     """Process entrypoint"""
