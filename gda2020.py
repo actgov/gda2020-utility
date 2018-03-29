@@ -46,7 +46,6 @@ def convert_xyz_to_csv(in_file, out_file):
         hzposu = line[212:222].rstrip()
         vzposu = line[222:232].rstrip()
         list_of_lines.append('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' % (station, const, easting, northing, zone, latitude, longitude, hortho, hellipse, x, y, z, sde, sdn, sdup, description, hzposu, vzposu))
-    print list_of_lines    
     out_file_obj.writelines(list_of_lines)
     out_file_obj.close()
     return;
