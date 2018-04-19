@@ -54,6 +54,7 @@ def convert_xyz_to_csv(in_file, out_file):
     Creates a clean list where 
     unicode strings are converted to ascii,
     nan and int are converted to strings.
+    
 """
 def clean_input_list(mark_list):
     cleaned_list = []
