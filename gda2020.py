@@ -12,44 +12,6 @@ import os
 # Date: 29/03/2018
 # Details: Added convert_xyz_to_csv function
 
-"""
-    converts xyz file to csv file
-
-"""
-
-def convert_xyz_to_csv(in_file, out_file):
-
-    out_file_obj = open(out_file, "a")
-    list_of_lines = ['station,const,easting,northing,zone,latitude,longitude, \
-                    h(ortho),h(ellipse),x,y,z,sd(e),sd(n),sd(up),act_station_name,hzposu,vzposu,\n']
-
-    in_file_obj = open(in_file, "r")
-    data = in_file_obj.readlines()[26:751]
-
-    for line in data:
-        station = line[0:20].rstrip()
-        const = line[20:28].rstrip()
-        easting = line[28:42].rstrip()
-        northing = line[42:60].rstrip()
-        zone = line[60:63].rstrip()
-        latitude = line[63:78].rstrip()
-        longitude = line[78:93].rstrip()
-        hortho = line[93:104].rstrip().lstrip()
-        hellipse = line[104:115].rstrip().lstrip()
-        x = line[115:131].rstrip()
-        y = line[131:145].rstrip()
-        z = line[145:164].rstrip()
-        sde = line[164:174].rstrip()
-        sdn = line[174:184].rstrip()
-        sdup = line[184:192].rstrip()
-        description = line[192:212].rstrip()
-        hzposu = line[212:222].rstrip()
-        vzposu = line[222:232].rstrip()
-        list_of_lines.append('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' % (station, const, easting, northing, zone, latitude, longitude, hortho, hellipse, x, y, z, sde, sdn, sdup, description, hzposu, vzposu))
-    out_file_obj.writelines(list_of_lines)
-    out_file_obj.close()
-    return;
-
 """ 
     Creates a clean list where 
     unicode strings are converted to ascii,
@@ -191,6 +153,45 @@ def extract_and_process_jurisdiction(jur_name, jur_marks_in, nadj_xyz_in, nadj_a
     f.writelines(jurisdiction_marks_to_output)
     f.truncate()
     f.close()
+
+
+"""
+    converts xyz file to csv file
+
+"""
+
+def convert_xyz_to_csv(in_file, out_file):
+
+    out_file_obj = open(out_file, "a")
+    list_of_lines = ['station,const,easting,northing,zone,latitude,longitude, \
+                    h(ortho),h(ellipse),x,y,z,sd(e),sd(n),sd(up),act_station_name,hzposu,vzposu,\n']
+
+    in_file_obj = open(in_file, "r")
+    data = in_file_obj.readlines()[26:751]
+
+    for line in data:
+        station = line[0:20].rstrip()
+        const = line[20:28].rstrip()
+        easting = line[28:42].rstrip()
+        northing = line[42:60].rstrip()
+        zone = line[60:63].rstrip()
+        latitude = line[63:78].rstrip()
+        longitude = line[78:93].rstrip()
+        hortho = line[93:104].rstrip().lstrip()
+        hellipse = line[104:115].rstrip().lstrip()
+        x = line[115:131].rstrip()
+        y = line[131:145].rstrip()
+        z = line[145:164].rstrip()
+        sde = line[164:174].rstrip()
+        sdn = line[174:184].rstrip()
+        sdup = line[184:192].rstrip()
+        description = line[192:212].rstrip()
+        hzposu = line[212:222].rstrip()
+        vzposu = line[222:232].rstrip()
+        list_of_lines.append('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' % (station, const, easting, northing, zone, latitude, longitude, hortho, hellipse, x, y, z, sde, sdn, sdup, description, hzposu, vzposu))
+    out_file_obj.writelines(list_of_lines)
+    out_file_obj.close()
+    return;
 
 if __name__ == "__main__":
     try:
