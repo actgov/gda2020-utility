@@ -39,8 +39,11 @@ def clean_input_list(mark_list):
 
 
 """
-The purpose of this function is to fix the header of RINEX observation files.
-
+    This function amends the header of the RINEX survey mark observation file.
+    The RINEX files are processed by Geoscience Australia and have Commonwealth 
+    mark ids in the form of Number Number Alpha Alpha. This scripts uses the 
+    ACT NGCA Record.xlsx spreadsheet to map the ACT mark names and then rename 
+    the Commonwealth ids int he RINEX header files.
 """
 
 # gda2020.fix_rinex_header(   NGCA_observations_spreadsheet="Drive:\\Folder\\NGCA\\ACT NGCA Record.xlsx", \
@@ -240,7 +243,10 @@ def extract_and_process_jurisdiction(jur_name, jur_marks_in, nadj_xyz_in, nadj_a
 
 
 """
-    converts xyz file to csv file
+    This function converts the output xyz file to csv. The function is called 
+    from an FME workbench. The purpose is to prepare the data for ingestion 
+    into the ACTmapi survey infrastructure site.
+    http://app.actmapi.act.gov.au/actmapi/index.html?viewer=scm
 
 """
 
