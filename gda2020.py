@@ -2,15 +2,23 @@ import pandas as pd
 from time import gmtime, strftime
 from datetime import datetime
 from dateutil import tz
-import argparse
+from os import listdir
+from os.path import isfile, join
+import shutil
 import sys
 import os
 
 # Author: Aaron O'Hehir - actmapi administrator
 # Date: 23/01/2018
+# Details: Developed the extract_and_process_jurisdiction function
+#
 # Author: Joshua Thomson - SDMS project officer
 # Date: 29/03/2018
-# Details: Added convert_xyz_to_csv function
+# Details: Added convert_xyz_to_csv function to be used in fme
+#
+# Author: Aaron O'Hehir - actmapi administrator
+# Date: 23/07/2019
+# Details: Developed the fix_rinex_header function
 
 """ 
     Creates a clean list where 
@@ -29,8 +37,84 @@ def clean_input_list(mark_list):
             cleaned_list.append(str(mark))
     return cleaned_list
 
+
 """
-    This script takes an input jurisdiction master list (xls document) and
+The purpose of this function is to fix the header of RINEX observation files.
+
+"""
+
+# gda2020.fix_rinex_header(   NGCA_observations_spreadsheet="Drive:\\Folder\\NGCA\\ACT NGCA Record.xlsx", \
+#                             input_RINEX_directory="Drive:\\Folder\\NGCA\\20190722_ACT_NGCA_all RINEX files", \
+#                             output_location_for_RINEX_directory="Drive:\\Folder\\NGCA")
+
+def fix_rinex_header(NGCA_observations_spreadsheet, input_RINEX_directory, output_location_for_RINEX_directory):
+    # Check to see if output directory exists
+    # Delete output directory and sub files if it exists
+    # Create empty output directory '20190722_ACT_NGCA_all RINEX files'. 
+    # Change date and add Modified to end of folder name.
+    # Store output location in variable
+    date = str(datetime.today().strftime('%Y-%m-%d')).replace('-','')
+    out_rinex_dir = os.path.join(output_location_for_RINEX_directory, date + '_ACT_NGCA_Modified')
+    if os.path.isdir(out_rinex_dir) is True:
+        shutil.rmtree(out_rinex_dir)
+        os.makedirs(out_rinex_dir)
+        os.makedirs(os.path.join(out_rinex_dir, 'log'))
+    else:
+        os.makedirs(out_rinex_dir)
+        os.makedirs(os.path.join(out_rinex_dir, 'log'))
+    
+    # Create log file
+    log_obj = open(os.path.join(out_rinex_dir, 'log', 'log.txt'), 'w')
+    
+    # Read in observations from NGCA spreadsheet
+    xlsx = pd.ExcelFile(NGCA_observations_spreadsheet)
+    # get the first sheet as an object
+    sheet1 = xlsx.parse(0)
+    
+    ACT_NGCA_IDS = clean_input_list(sheet1.iloc[:,0].real)
+    ACT_MARK_NAMES = clean_input_list(sheet1.iloc[:,2].real)
+    RINEX_Filenames = clean_input_list(sheet1.iloc[:,9].real)
+    
+    # Read in a list of RINEX files in RIXEN directory
+    RINEX_files = [f for f in listdir(input_RINEX_directory) if isfile(join(input_RINEX_directory, f))]
+    
+    # Create observation dict with 'ACT NGCA ID', 'ACT NAME' and 'RINEX_Filename' fields from observations spreadsheet
+    # if 'ACT NGCA ID' is not nan and is a 4 character string that is number number alpha alpha
+    # Iterate through RIXEN files and amending the header
+    log_data = ''
+    NGCA_observations = {}
+    i = 0
+    for act_ngca_id in ACT_NGCA_IDS:
+        if (len(act_ngca_id) is 4):
+            act_ngca_id = ACT_NGCA_IDS[i]
+            act_mark_name = ACT_MARK_NAMES[i]
+            RINEX_Filename = RINEX_Filenames[i]
+            log_data += "NGCA: {0}, ACT Mark: {1}, RINEX: {2}\n".format(act_ngca_id, act_mark_name, RINEX_Filename)
+            
+            # Read RINEX file into a list
+            rinex_to_open = os.path.join(input_RINEX_directory, RINEX_Filename)
+            try:
+                rinex_as_list = open(rinex_to_open).readlines()
+            except IOError:
+                log_data += 'No such file: ' + rinex_to_open + '\n'
+            header_line_to_modify = rinex_as_list[4]
+            # Modify the observation name from NGCA to ACT Mark Name
+            if len(act_mark_name) is 3:
+                replacement_line = act_mark_name + ' ' + header_line_to_modify[4:]
+            else:
+                replacement_line = act_mark_name + header_line_to_modify[len(act_mark_name):]
+            rinex_as_list[4] = replacement_line
+            
+            # Write modified RINEX file to output location
+            open(os.path.join(out_rinex_dir, RINEX_Filename), 'w').writelines(rinex_as_list)
+            i += 1
+        else:
+            i += 1
+    
+    log_obj.write(log_data)
+
+"""
+    This function takes an input jurisdiction master list (xls document) and
     uses it to create a subset of the national adjustment (.xyz) file.
     The script also adopts (renames) jurisdiction mark names where there 
     is a conflict between NADJ and jurisdiction mark names.
@@ -50,7 +134,7 @@ def clean_input_list(mark_list):
 #                                           nadj_xyz_in="gda2020_20180131.phased-mt.xyz", \
 #                                           nadj_apu_in="gda2020_20180131.phased-mt.apu", \
 #                                           subset_out=r"Drive:/Path/To/Directory/GDA2020/output/stn_gda2020_20180131.xyz", \
-#											input_dir = 'Drive:\\Path\\To\\Directory\\GDA2020\\input')
+#					                        input_dir = 'Drive:\\Path\\To\\Directory\\GDA2020\\input')
 
 def extract_and_process_jurisdiction(jur_name, jur_marks_in, nadj_xyz_in, nadj_apu_in, subset_out, input_dir):
     
@@ -192,9 +276,3 @@ def convert_xyz_to_csv(in_file, out_file):
     out_file_obj.writelines(list_of_lines)
     out_file_obj.close()
     return;
-
-if __name__ == "__main__":
-    try:
-        extract_and_process_jurisdiction(jur_name, jur_marks_in, nadj_xyz_in, nadj_apu_in, subset_out, input_dir)
-    except Exception as e:
-        sys.exit(1)
