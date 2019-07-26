@@ -8,13 +8,3 @@ Description:
     is a conflict between NADJ and jurisdiction mark names.
     The jurisdiction xls has a column with NADJ mark names and another
     column containing jurisdiction mark names to adopt. 
-
-    Sample Usage: python gda2020_utility.py --jurisdiction_name ACT
-                                            --jurisdiction_marks_in Drive:\path\jurisdiction_marks_in.xls 
-                                            --national_marks_in Drive:\path\national_marks_in.xyz 
-                                            --subset_out Drive:\path\subset_out.xyz
-
-    where:  jurisdiction_name = string name of jurisidiction.
-            jurisdiction_marks_in = path, file name and extension to jurisdiction marks input xls file
-            national_marks_in = path, file name and extension to national adjustment input .xyz file
-            subset_out = path, file name and extension to jurisdiction subset output .xyz file
